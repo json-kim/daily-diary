@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:daily_diary/core/util/date_config.dart';
 import 'package:daily_diary/presentation/edit/edit_event.dart';
+import 'package:daily_diary/presentation/global_components/check_dialog.dart';
 import 'package:daily_diary/ui/emotion_data.dart';
 import 'package:direct_select_flutter/direct_select_container.dart';
 import 'package:direct_select_flutter/direct_select_item.dart';
@@ -89,29 +90,13 @@ class _EditScreenState extends State<EditScreen> {
           if (!state.isEditMode)
             IconButton(
                 onPressed: () async {
-                  final dialog = AlertDialog(
-                    title: const Text('알림'),
-                    content: const Text('정말로 삭제하시겠습니까?'),
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            Navigator.pop(context, true);
-                          },
-                          child: const Text('네')),
-                      TextButton(
-                          onPressed: () {
-                            Navigator.pop(context, false);
-                          },
-                          child: const Text('아니요')),
-                    ],
-                  );
-
                   final result = await showDialog<bool>(
-                      context: context, builder: (context) => dialog);
+                      context: context,
+                      builder: (context) =>
+                          const CheckDialog(content: '정말로 삭제하시겠습니까?'));
 
                   if (result ?? false) {
                     viewModel.onEvent(const EditEvent.delete());
-                    print(result);
                   }
                 },
                 icon: const Text('삭제')),

@@ -13,4 +13,6 @@ abstract class DiaryRepository {
   Future<Result<int>> updateDiary(Diary diary);
 
   Future<Result<int>> saveDairy(Diary diary);
+
+  Future<Result<int>> deleteAll();
 }

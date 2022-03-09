@@ -1,6 +1,7 @@
 import 'package:daily_diary/data/data_source/local/diary_local_data_source.dart';
 import 'package:daily_diary/data/repository/diary_repository_impl.dart';
 import 'package:daily_diary/domain/repository/diary_repository.dart';
+import 'package:daily_diary/domain/usecase/delete_all_use_case.dart';
 import 'package:daily_diary/domain/usecase/delete_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/load_all_use_case.dart';
 import 'package:daily_diary/domain/usecase/load_diaries_year_use_case.dart';
@@ -45,12 +46,15 @@ Future<List<SingleChildWidget>> setProviders() async {
         update: (context, repository, _) => UpdateDiaryUseCase(repository)),
     ProxyProvider<DiaryRepository, SaveDiaryUseCase>(
         update: (context, repository, _) => SaveDiaryUseCase(repository)),
+    ProxyProvider<DiaryRepository, DeleteAllUseCase>(
+        update: (context, repository, _) => DeleteAllUseCase(repository)),
   ];
 
   final List<SingleChildWidget> viewModels = [
     ChangeNotifierProvider<CalendarViewModel>(
       create: (context) => CalendarViewModel(
         context.read<LoadDiariesYearUseCase>(),
+        context.read<DeleteAllUseCase>(),
       ),
     ),
   ];

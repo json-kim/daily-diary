@@ -8,4 +8,6 @@ class CalendarEvent with _$CalendarEvent {
   const factory CalendarEvent.changeYear(bool up) = ChangeYear;
   const factory CalendarEvent.delete(DateTime date) = Delete;
   const factory CalendarEvent.reset() = Reset;
+  const factory CalendarEvent.backup() = Backup;
+  const factory CalendarEvent.loadBackup() = LoadBackup;
 }

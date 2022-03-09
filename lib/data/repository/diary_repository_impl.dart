@@ -102,4 +102,18 @@ class DiaryRepositoryImpl with DiaryRepository {
       },
     );
   }
+
+  @override
+  Future<Result<int>> deleteAll() async {
+    final result = await _dataSource.deleteAll();
+
+    return result.when(
+      success: (delResult) {
+        return Result.success(delResult);
+      },
+      error: (message) {
+        return Result.error(message);
+      },
+    );
+  }
 }

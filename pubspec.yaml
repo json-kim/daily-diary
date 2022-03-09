@@ -37,6 +37,11 @@ dependencies:
   # ui
   cupertino_icons: ^1.0.2
   direct_select_flutter: ^1.1.1
+  flutter_signin_button: ^2.0.0
+  flutter_inner_drawer: # null safety error
+    git:
+      url: https://github.com/kenjishiromajp/flutter_inner_drawer 
+      ref: kenjishiromajp-update-for-2.12-null-safety-casting
 
 
   # state management
@@ -61,6 +66,13 @@ dependencies:
 
   # uuid
   uuid: ^3.0.6
+
+  # firebase
+  firebase_core: ^1.13.1
+  firebase_auth: ^3.3.9
+  google_sign_in: ^5.2.4
+
+
 
 
 dev_dependencies:

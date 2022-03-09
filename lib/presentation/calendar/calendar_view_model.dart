@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:daily_diary/core/param/param.dart';
+import 'package:daily_diary/domain/usecase/delete_all_use_case.dart';
 import 'package:daily_diary/domain/usecase/load_diaries_year_use_case.dart';
 import 'package:daily_diary/service/logger_service.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'calendar_ui_event.dart';
 class CalendarViewModel with ChangeNotifier {
   /// 유스케이스
   final LoadDiariesYearUseCase _loadDiariesYearUseCase;
+  final DeleteAllUseCase _deleteAllUseCase;
 
   /// ui event 스트림 컨트롤러 (viewModel => view)
   final _streamController = StreamController<CalendarUiEvent>.broadcast();
@@ -28,7 +30,10 @@ class CalendarViewModel with ChangeNotifier {
   }
 
   /// 생성자 (_load 호출)
-  CalendarViewModel(this._loadDiariesYearUseCase) {
+  CalendarViewModel(
+    this._loadDiariesYearUseCase,
+    this._deleteAllUseCase,
+  ) {
     _load();
   }
 
@@ -41,7 +46,13 @@ class CalendarViewModel with ChangeNotifier {
   /// 이벤트 리스너 등록 (view => viewModel)
   void onEvent(CalendarEvent event) {
     event.when(
-        load: _load, changeYear: _changeYear, delete: _delete, reset: _reset);
+      load: _load,
+      changeYear: _changeYear,
+      delete: _delete,
+      reset: _reset,
+      backup: _backup,
+      loadBackup: _loadBackup,
+    );
   }
 
   /// 연도 변경
@@ -62,15 +73,20 @@ class CalendarViewModel with ChangeNotifier {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
+    // 다이어리 가져오기 (현재 연도)
     final result = await _loadDiariesYearUseCase(Data(_state.currentDate.year));
     result.when(
       success: (diaries) {
+        // 상태 변경
         _state = _state.copyWith(
           diaries: diaries,
         );
       },
       error: (message) {
+        // 실패시 에러 메시지 출력
         LoggerService.instance.logger?.e(message);
+
+        // 실패 메시지 화면 표시
         _streamController.add(const CalendarUiEvent.snackBar('불러오기 실패'));
       },
     );
@@ -95,9 +111,31 @@ class CalendarViewModel with ChangeNotifier {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    // TODO: 데이터 리셋
+    // 데이터 리셋
+    final result = await _deleteAllUseCase(None());
+
+    result.when(
+      success: (delResult) {
+        // 리셋 메시지
+        _streamController.add(const CalendarUiEvent.snackBar('리셋 되었습니다.'));
+
+        // 리셋 후 데이터 다시 로드
+        _load();
+      },
+      error: (message) {
+        // 에러 메시지 출력
+        LoggerService.instance.logger?.e(message);
+
+        // 실패 메시지 화면 표시
+        _streamController.add(const CalendarUiEvent.snackBar('리셋 실패!'));
+      },
+    );
 
     _state = _state.copyWith(isLoading: false);
     notifyListeners();
   }
+
+  Future<void> _backup() async {}
+
+  Future<void> _loadBackup() async {}
 }

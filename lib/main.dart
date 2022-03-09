@@ -1,6 +1,8 @@
 import 'package:daily_diary/core/di/provider_setting.dart';
+import 'package:daily_diary/presentation/auth/auth_gate.dart';
 import 'package:daily_diary/presentation/calendar/calendar_screen.dart';
 import 'package:daily_diary/service/logger_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +10,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   LoggerService.instance.init();
   final providers = await setProviders();
   runApp(
@@ -42,8 +45,7 @@ class MyApp extends StatelessWidget {
             titleTextStyle: TextStyle(color: Colors.black)),
       ),
       home: ResponsiveSizer(
-          builder: (context, orientation, screenType) =>
-              const CalendarScreen()),
+          builder: (context, orientation, screenType) => const AuthGate()),
     );
   }
 }
