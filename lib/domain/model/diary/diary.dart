@@ -11,6 +11,24 @@ class Diary {
     required this.emoIndex,
   });
 
+  factory Diary.fromJson(Map<String, dynamic> json) {
+    return Diary(
+      id: json['id'] as String,
+      date: DateTime.parse(json['date']),
+      content: json['content'],
+      emoIndex: json['emoIndex'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'date': date.toIso8601String(),
+      'content': content,
+      'emoIndex': emoIndex,
+    };
+  }
+
   @override
   String toString() {
     return 'Diary(id: $id, date: $date, content: $content, emoIndex: $emoIndex)';
