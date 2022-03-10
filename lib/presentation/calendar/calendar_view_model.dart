@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:daily_diary/core/param/param.dart';
 import 'package:daily_diary/domain/usecase/delete_all_use_case.dart';
 import 'package:daily_diary/domain/usecase/load_diaries_year_use_case.dart';
+import 'package:daily_diary/domain/usecase/save_backup_use_case.dart';
 import 'package:daily_diary/service/logger_service.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_date/dart_date.dart';
@@ -15,6 +16,7 @@ class CalendarViewModel with ChangeNotifier {
   /// 유스케이스
   final LoadDiariesYearUseCase _loadDiariesYearUseCase;
   final DeleteAllUseCase _deleteAllUseCase;
+  final SaveBackupUseCase _saveBackupUseCase;
 
   /// ui event 스트림 컨트롤러 (viewModel => view)
   final _streamController = StreamController<CalendarUiEvent>.broadcast();
@@ -33,6 +35,7 @@ class CalendarViewModel with ChangeNotifier {
   CalendarViewModel(
     this._loadDiariesYearUseCase,
     this._deleteAllUseCase,
+    this._saveBackupUseCase,
   ) {
     _load();
   }
@@ -135,7 +138,26 @@ class CalendarViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _backup() async {}
+  Future<void> _backup() async {
+    _state = _state.copyWith(isLoading: true);
+    notifyListeners();
+
+    final result = await _saveBackupUseCase(const None());
+
+    result.when(
+      success: (_) {
+        _streamController.add(const CalendarUiEvent.snackBar('저장에 성공했습니다.'));
+      },
+      error: (message) {
+        LoggerService.instance.logger?.e(message);
+        _streamController
+            .add(const CalendarUiEvent.snackBar('백업 데이터 저장에 실패했습니다.'));
+      },
+    );
+
+    _state = _state.copyWith(isLoading: false);
+    notifyListeners();
+  }
 
   Future<void> _loadBackup() async {}
 }

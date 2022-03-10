@@ -28,7 +28,9 @@ class RightDrawer extends StatelessWidget {
               DrawerButton(
                 title: '서버에 백업하기',
                 icon: const Icon(Icons.north_east),
-                onTap: () {},
+                onTap: () {
+                  viewModel.onEvent(const CalendarEvent.backup());
+                },
               ),
               const Divider(color: Colors.black, height: 0),
               DrawerButton(

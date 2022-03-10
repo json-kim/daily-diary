@@ -1,11 +1,15 @@
 import 'package:daily_diary/data/data_source/local/diary_local_data_source.dart';
+import 'package:daily_diary/data/data_source/remote/backup_remote_data_source.dart';
+import 'package:daily_diary/data/repository/backup_repository_impl.dart';
 import 'package:daily_diary/data/repository/diary_repository_impl.dart';
+import 'package:daily_diary/domain/repository/backup_repository.dart';
 import 'package:daily_diary/domain/repository/diary_repository.dart';
 import 'package:daily_diary/domain/usecase/delete_all_use_case.dart';
 import 'package:daily_diary/domain/usecase/delete_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/load_all_use_case.dart';
 import 'package:daily_diary/domain/usecase/load_diaries_year_use_case.dart';
 import 'package:daily_diary/domain/usecase/load_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/save_backup_use_case.dart';
 import 'package:daily_diary/domain/usecase/save_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/update_diary_use_case.dart';
 import 'package:daily_diary/presentation/calendar/calendar_view_model.dart';
@@ -26,11 +30,14 @@ Future<List<SingleChildWidget>> setProviders() async {
 
   final List<SingleChildWidget> dataSources = [
     Provider(create: (context) => DiaryLocalDataSource(db)),
+    Provider(create: (context) => BackupRemoteDataSource()),
   ];
 
   final List<SingleChildWidget> repositories = [
     ProxyProvider<DiaryLocalDataSource, DiaryRepository>(
         update: (context, dataSource, _) => DiaryRepositoryImpl(dataSource)),
+    ProxyProvider<BackupRemoteDataSource, BackupRepository>(
+        update: (context, dataSource, _) => BackupRepositoryImpl(dataSource)),
   ];
 
   final List<SingleChildWidget> usecases = [
@@ -48,6 +55,14 @@ Future<List<SingleChildWidget>> setProviders() async {
         update: (context, repository, _) => SaveDiaryUseCase(repository)),
     ProxyProvider<DiaryRepository, DeleteAllUseCase>(
         update: (context, repository, _) => DeleteAllUseCase(repository)),
+
+    // 백업 데이터
+    ProxyProvider<BackupRepository, SaveBackupUseCase>(
+      update: (context, repository, _) => SaveBackupUseCase(
+        repository,
+        context.read<LoadAllUseCase>(),
+      ),
+    ),
   ];
 
   final List<SingleChildWidget> viewModels = [
@@ -55,6 +70,7 @@ Future<List<SingleChildWidget>> setProviders() async {
       create: (context) => CalendarViewModel(
         context.read<LoadDiariesYearUseCase>(),
         context.read<DeleteAllUseCase>(),
+        context.read<SaveBackupUseCase>(),
       ),
     ),
   ];
