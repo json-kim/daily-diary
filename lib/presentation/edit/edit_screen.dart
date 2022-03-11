@@ -10,6 +10,7 @@ import 'package:direct_select_flutter/direct_select_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:dart_date/dart_date.dart';
 
 import 'edit_view_model.dart';
 
@@ -73,8 +74,8 @@ class _EditScreenState extends State<EditScreen> {
             final date = await showDatePicker(
               context: context,
               initialDate: state.selectedDate,
-              firstDate: firstDate,
-              lastDate: lastDate,
+              firstDate: state.selectedDate.startOfYear,
+              lastDate: state.selectedDate.endOfYear,
             );
 
             if (date != null) {

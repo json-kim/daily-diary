@@ -169,12 +169,18 @@ class EditViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  // 다이어리 삭제하기 (현재 날짜)
+  // 다이어리 삭제하기 (다이어리 아이디)
   Future<void> _delete() async {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    final result = await _deleteDiaryUseCase(Data(_state.selectedDate));
+    // 현재 저장된 다이어리가 없다면 삭제 동작 x 하고 데이터 다시 로드
+    if (_diary == null) {
+      _load();
+      return;
+    }
+
+    final result = await _deleteDiaryUseCase(Data(_diary!));
 
     result.when(
       success: (delResult) {

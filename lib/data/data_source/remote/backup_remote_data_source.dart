@@ -33,9 +33,9 @@ class BackupRemoteDataSource {
 
     final file = await _convertToFile(jsonString); // File로 변환
 
-    final url = await _saveBackupData(file); // File 서버에 저장
+    final path = await _saveBackupData(file); // File 서버에 저장
 
-    await _saveBackupItem(url); // nosql 서버에 저장
+    await _saveBackupItem(path); // nosql 서버에 저장
 
     return const Result.success(1);
   }
@@ -72,8 +72,8 @@ class BackupRemoteDataSource {
     final path = tempDir.path;
 
     final tempFile = File('$path/temp.file');
-    tempFile.writeAsBytes(zippedBuffer);
-    tempFile.create();
+    await tempFile.writeAsBytes(zippedBuffer);
+    await tempFile.create();
 
     return tempFile;
   }
@@ -83,22 +83,20 @@ class BackupRemoteDataSource {
     FirebaseStorage storage = FirebaseStorage.instance; // 파이어스토리지
 
     String fileName = 'backup/${_uuid.v1()}.file'; // 저장될 파일 경로
-    Reference ref = storage.ref(_uuid.v1()); // 파일 레퍼런스(파일명)
+    Reference ref = storage.ref(fileName); // 파일 레퍼런스(파일명)
     await ref.putFile(file); // 파일 업로드
-
-    final String downLoadUrl = await ref.getDownloadURL(); // 파일 url 가져오기
 
     await file.delete(); // 임시 파일은 삭제
 
-    return downLoadUrl; // url 리턴
+    return fileName; // url 리턴
   }
 
   /// 백업파일url을 담은 클래스 파이어스토어에 저장
-  Future<void> _saveBackupItem(String url) async {
+  Future<void> _saveBackupItem(String path) async {
     // 백업 데이터
     final newBackupItem = BackupItem(
       id: _uuid.v1(),
-      url: url,
+      path: path,
       uploadDate: DateTime.now(),
     );
 
@@ -113,5 +111,49 @@ class BackupRemoteDataSource {
 
     await backupCollection
         .add(newBackupItem.toJson()); // backups 컬렉션에 백업 데이터 추가
+  }
+
+  /// 백업 아이템 리스트 파이어스토어에서 가져오기
+  Future<Result<List<BackupItem>>> getBackupList() async {
+    final firestore = FirebaseFirestore.instance; // 파이어 스토어
+
+    final uid = _getUid(); // 인증 유저 아이디
+
+    final userCollection = firestore.collection('users'); // 유저 컬렉션
+    final backupCollection =
+        userCollection.doc(uid).collection('backups'); // 현재 유저의 백업 컬렉션
+
+    final snapshot = await backupCollection.get(); // 컬렉션 스냅샷
+    final docsSnapshot = snapshot.docs; // 문서들 스냅샷
+    final backupItems = docsSnapshot
+        .map((docSnapshot) => BackupItem.fromJson(docSnapshot.data()))
+        .toList(); // 백업 아이템으로 변환
+
+    return Result.success(backupItems);
+  }
+
+  /// 백업 데이터 경로를 가지고 백업 데이터 파이어스토리지에서 가져오기
+  Future<Result<BackupData>> getBackupData(String path) async {
+    final tempDir = await getTemporaryDirectory();
+    final filePath = tempDir.path;
+    final downloadFile = File('$filePath/temp.file');
+    await downloadFile.create();
+
+    final storage = FirebaseStorage.instance;
+
+    final fileRef = storage.ref(path);
+
+    await fileRef.writeToFile(downloadFile);
+
+    final fileByteList = await downloadFile.readAsBytes();
+    final unZippedList = gzip.decode(fileByteList);
+
+    final decoder = Utf8Decoder();
+    final jsonString = decoder.convert(unZippedList);
+
+    final json = jsonDecode(jsonString);
+    final backupData = BackupData.fromJson(json);
+
+    return Result.success(backupData);
   }
 }

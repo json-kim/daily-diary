@@ -10,11 +10,11 @@ class BackupData {
   });
 
   factory BackupData.fromJson(Map<String, dynamic> json) {
-    List<Map<String, dynamic>> jsonList = json['diaries'];
+    List jsonList = json['diaries'];
     List<Diary> diaries = jsonList.map((json) => Diary.fromJson(json)).toList();
 
     return BackupData(
-      uploadDate: DateTime.parse(json['uploadData']),
+      uploadDate: DateTime.parse(json['uploadDate']),
       diaries: diaries,
     );
   }

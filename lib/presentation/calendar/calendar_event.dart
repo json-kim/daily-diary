@@ -1,3 +1,4 @@
+import 'package:daily_diary/domain/model/backup/backup_item.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'calendar_event.freezed.dart';
@@ -9,5 +10,7 @@ class CalendarEvent with _$CalendarEvent {
   const factory CalendarEvent.delete(DateTime date) = Delete;
   const factory CalendarEvent.reset() = Reset;
   const factory CalendarEvent.backup() = Backup;
-  const factory CalendarEvent.loadBackup() = LoadBackup;
+  const factory CalendarEvent.loadBackupList() = LoadBackupList;
+  const factory CalendarEvent.restoreBackupData(BackupItem item) =
+      RestoreBackupData;
 }

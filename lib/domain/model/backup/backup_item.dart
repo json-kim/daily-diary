@@ -1,18 +1,18 @@
 class BackupItem {
   final String id;
-  final String url;
+  final String path;
   final DateTime uploadDate;
 
   BackupItem({
     required this.id,
-    required this.url,
+    required this.path,
     required this.uploadDate,
   });
 
   factory BackupItem.fromJson(Map<String, dynamic> json) {
     return BackupItem(
       id: json['id'],
-      url: json['url'],
+      path: json['path'],
       uploadDate: DateTime.parse(json['uploadDate']),
     );
   }
@@ -20,7 +20,7 @@ class BackupItem {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'url': url,
+      'path': path,
       'uploadDate': uploadDate.toIso8601String(),
     };
   }

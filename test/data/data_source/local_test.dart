@@ -45,7 +45,7 @@ void main() {
     });
 
     final result4 = await dataSource.updateDiary(entity2);
-    final result5 = await dataSource.deleteDiary(DateTime(2022, 12, 21));
+    final result5 = await dataSource.deleteDiary('testid1');
     final result3 = await dataSource.getDiariesYear(2022);
 
     result3.when(success: (list) {
@@ -57,16 +57,18 @@ void main() {
 }
 
 final entity = DiaryLocalEntity(
-    id: 'testid',
+    id: 'testid1',
     content: 'hihihihihihi',
+    uid: 'test1',
     emoIndex: 0,
     year: 2022,
     month: 12,
     day: 21);
 
 final entity2 = DiaryLocalEntity(
-    id: 'testid',
+    id: 'testid2',
     content: 'hohohoho',
+    uid: 'test2',
     emoIndex: 1,
     year: 2022,
     month: 12,

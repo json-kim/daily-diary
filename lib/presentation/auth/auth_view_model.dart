@@ -45,4 +45,8 @@ class AuthViewModel with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
 }

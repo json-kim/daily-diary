@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:daily_diary/core/param/param.dart';
+import 'package:daily_diary/domain/model/backup/backup_item.dart';
 import 'package:daily_diary/domain/usecase/delete_all_use_case.dart';
+import 'package:daily_diary/domain/usecase/load_backup_list_use_case.dart';
 import 'package:daily_diary/domain/usecase/load_diaries_year_use_case.dart';
+import 'package:daily_diary/domain/usecase/resotre_backup_data_use_case.dart';
 import 'package:daily_diary/domain/usecase/save_backup_use_case.dart';
 import 'package:daily_diary/service/logger_service.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +20,8 @@ class CalendarViewModel with ChangeNotifier {
   final LoadDiariesYearUseCase _loadDiariesYearUseCase;
   final DeleteAllUseCase _deleteAllUseCase;
   final SaveBackupUseCase _saveBackupUseCase;
+  final LoadBackupListUseCase _loadBackupListUseCase;
+  final RestoreBackupDataUseCase _restoreBackupDataUseCase;
 
   /// ui event 스트림 컨트롤러 (viewModel => view)
   final _streamController = StreamController<CalendarUiEvent>.broadcast();
@@ -36,6 +41,8 @@ class CalendarViewModel with ChangeNotifier {
     this._loadDiariesYearUseCase,
     this._deleteAllUseCase,
     this._saveBackupUseCase,
+    this._loadBackupListUseCase,
+    this._restoreBackupDataUseCase,
   ) {
     _load();
   }
@@ -54,7 +61,8 @@ class CalendarViewModel with ChangeNotifier {
       delete: _delete,
       reset: _reset,
       backup: _backup,
-      loadBackup: _loadBackup,
+      loadBackupList: _loadBackupList,
+      restoreBackupData: _restoreBackupData,
     );
   }
 
@@ -115,7 +123,7 @@ class CalendarViewModel with ChangeNotifier {
     notifyListeners();
 
     // 데이터 리셋
-    final result = await _deleteAllUseCase(None());
+    final result = await _deleteAllUseCase(const None());
 
     result.when(
       success: (delResult) {
@@ -134,6 +142,8 @@ class CalendarViewModel with ChangeNotifier {
       },
     );
 
+    _streamController.add(const CalendarUiEvent.toggleDrawer(false));
+
     _state = _state.copyWith(isLoading: false);
     notifyListeners();
   }
@@ -146,7 +156,7 @@ class CalendarViewModel with ChangeNotifier {
 
     result.when(
       success: (_) {
-        _streamController.add(const CalendarUiEvent.snackBar('저장에 성공했습니다.'));
+        _streamController.add(const CalendarUiEvent.snackBar('백업 저장에 성공했습니다.'));
       },
       error: (message) {
         LoggerService.instance.logger?.e(message);
@@ -155,9 +165,56 @@ class CalendarViewModel with ChangeNotifier {
       },
     );
 
+    _streamController.add(const CalendarUiEvent.toggleDrawer(false));
+
     _state = _state.copyWith(isLoading: false);
     notifyListeners();
   }
 
-  Future<void> _loadBackup() async {}
+  Future<void> _loadBackupList() async {
+    _state = _state.copyWith(isLoading: true);
+    notifyListeners();
+
+    final result = await _loadBackupListUseCase(const None());
+
+    result.when(
+      success: (list) {
+        _streamController.add(CalendarUiEvent.showBackupList(list));
+      },
+      error: (message) {
+        LoggerService.instance.logger?.e(message);
+      },
+    );
+
+    _state = _state.copyWith(isLoading: false);
+    notifyListeners();
+  }
+
+  Future<void> _restoreBackupData(BackupItem backupItem) async {
+    _state = _state.copyWith(isLoading: true);
+    notifyListeners();
+
+    final result = await _restoreBackupDataUseCase(Data(backupItem));
+
+    result.when(
+      success: (_) {
+        // 백업 적용 후 다시 로드
+        _load();
+
+        _streamController
+            .add(const CalendarUiEvent.snackBar('백업 데이터 적용 성공했습니다.'));
+      },
+      error: (message) {
+        LoggerService.instance.logger?.e(message);
+
+        _streamController
+            .add(const CalendarUiEvent.snackBar('백업 실패 다시 시도해 보세요.'));
+      },
+    );
+
+    _streamController.add(const CalendarUiEvent.toggleDrawer(false));
+
+    _state = _state.copyWith(isLoading: false);
+    notifyListeners();
+  }
 }

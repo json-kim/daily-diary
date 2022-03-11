@@ -5,6 +5,7 @@ import 'package:daily_diary/domain/usecase/load_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/save_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/update_diary_use_case.dart';
 import 'package:daily_diary/presentation/calendar/calendar_event.dart';
+import 'package:daily_diary/presentation/calendar/calendar_event.dart';
 import 'package:daily_diary/presentation/calendar/components/daily_box.dart';
 import 'package:daily_diary/presentation/calendar/components/right_darwer.dart';
 import 'package:daily_diary/presentation/edit/edit_screen.dart';
@@ -28,6 +29,8 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
   GlobalKey<InnerDrawerState> _innerDrawerKey = GlobalKey<InnerDrawerState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
   StreamSubscription? _subscription;
 
   @override
@@ -41,9 +44,41 @@ class _CalendarScreenState extends State<CalendarScreen> {
             content: Text(message),
           );
 
-          ScaffoldMessenger.of(context)
-            ..hideCurrentMaterialBanner()
+          _scaffoldMessengerKey.currentState
+            ?..hideCurrentMaterialBanner()
             ..showSnackBar(snackBar);
+        }, showBackupList: (backupList) {
+          final dialog = AlertDialog(
+            title: const Text('백업 리스트'),
+            content: SizedBox(
+              height: 60.h,
+              width: 70.w,
+              child: ListView(
+                shrinkWrap: true,
+                children: backupList
+                    .map((item) => ListTile(
+                          title: Text(item.uploadDate.format('y/M/d - H:m:s')),
+                          onTap: () {
+                            viewModel
+                                .onEvent(CalendarEvent.restoreBackupData(item));
+                            Navigator.pop(context);
+                          },
+                        ))
+                    .toList(),
+              ),
+            ),
+          );
+
+          showDialog(
+            context: context,
+            builder: (context) => dialog,
+          );
+        }, toggleDrawer: (isOpen) {
+          if (isOpen) {
+            _innerDrawerKey.currentState?.open();
+          } else {
+            _innerDrawerKey.currentState?.close();
+          }
         });
       });
     });
@@ -69,98 +104,101 @@ class _CalendarScreenState extends State<CalendarScreen> {
           rightChild: const RightDrawer(),
           onTapClose: true,
           backgroundDecoration: const BoxDecoration(color: Colors.white),
-          scaffold: Scaffold(
-            backgroundColor: whiteColor,
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              title: const Text('Calendar Diary'),
-              actions: [
-                IconButton(
-                    onPressed: () {
-                      _innerDrawerKey.currentState?.toggle();
-                    },
-                    icon: const Icon(Icons.menu))
-              ],
-            ),
-            body: Column(
-              children: [
-                SizedBox(
-                  height: 8.h,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Row(children: [
-                      IconButton(
-                        onPressed: () {
-                          viewModel
-                              .onEvent(const CalendarEvent.changeYear(false));
-                        },
-                        icon: Icon(
-                          Icons.arrow_back_ios,
-                          size: 16.sp,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Expanded(
-                          child: Center(
-                              child: Text(
-                        state.currentDate.year.toString(),
-                        style: TextStyle(fontSize: 16.sp),
-                      ))),
-                      IconButton(
-                        onPressed: () {
-                          viewModel
-                              .onEvent(const CalendarEvent.changeYear(true));
-                        },
-                        icon: Icon(
-                          Icons.arrow_forward_ios,
-                          size: 16.sp,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ]),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  child: Row(
-                    children: List.generate(
-                        14,
-                        (index) => Expanded(
-                                child: Center(
-                              child: index == 0 || index == 13
-                                  ? Container()
-                                  : Text(index.toString()),
-                            ))),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        viewModel.onEvent(const CalendarEvent.load());
+          scaffold: ScaffoldMessenger(
+            key: _scaffoldMessengerKey,
+            child: Scaffold(
+              backgroundColor: whiteColor,
+              appBar: AppBar(
+                automaticallyImplyLeading: false,
+                title: const Text('Calendar Diary'),
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        _innerDrawerKey.currentState?.toggle();
                       },
-                      child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 14,
-                          childAspectRatio: 1,
-                          crossAxisSpacing: 1,
-                          mainAxisSpacing: 1,
+                      icon: const Icon(Icons.menu))
+                ],
+              ),
+              body: Column(
+                children: [
+                  SizedBox(
+                    height: 8.h,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Row(children: [
+                        IconButton(
+                          onPressed: () {
+                            viewModel
+                                .onEvent(const CalendarEvent.changeYear(false));
+                          },
+                          icon: Icon(
+                            Icons.arrow_back_ios,
+                            size: 16.sp,
+                            color: Colors.black,
+                          ),
                         ),
-                        itemCount: 434,
-                        itemBuilder: (context, idx) => GestureDetector(
-                          child: _buildDailyBox(
-                            idx,
-                            dates,
-                            viewModel,
+                        Expanded(
+                            child: Center(
+                                child: Text(
+                          state.currentDate.year.toString(),
+                          style: TextStyle(fontSize: 16.sp),
+                        ))),
+                        IconButton(
+                          onPressed: () {
+                            viewModel
+                                .onEvent(const CalendarEvent.changeYear(true));
+                          },
+                          icon: Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16.sp,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ]),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    child: Row(
+                      children: List.generate(
+                          14,
+                          (index) => Expanded(
+                                  child: Center(
+                                child: index == 0 || index == 13
+                                    ? Container()
+                                    : Text(index.toString()),
+                              ))),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                          viewModel.onEvent(const CalendarEvent.load());
+                        },
+                        child: GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 14,
+                            childAspectRatio: 1,
+                            crossAxisSpacing: 1,
+                            mainAxisSpacing: 1,
+                          ),
+                          itemCount: 434,
+                          itemBuilder: (context, idx) => GestureDetector(
+                            child: _buildDailyBox(
+                              idx,
+                              dates,
+                              viewModel,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ),

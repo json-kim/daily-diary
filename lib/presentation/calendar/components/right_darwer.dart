@@ -1,3 +1,4 @@
+import 'package:daily_diary/presentation/auth/auth_view_model.dart';
 import 'package:daily_diary/presentation/calendar/calendar_event.dart';
 import 'package:daily_diary/presentation/calendar/calendar_view_model.dart';
 import 'package:daily_diary/presentation/calendar/components/drawer_button.dart';
@@ -22,7 +23,9 @@ class RightDrawer extends StatelessWidget {
               DrawerButton(
                 title: '로그아웃',
                 icon: const Icon(Icons.logout),
-                onTap: () {},
+                onTap: () {
+                  context.read<AuthViewModel>().signOut();
+                },
               ),
               const Divider(color: Colors.black, height: 0),
               DrawerButton(
@@ -36,7 +39,9 @@ class RightDrawer extends StatelessWidget {
               DrawerButton(
                 title: '백업 불러오기',
                 icon: const Icon(Icons.south_west),
-                onTap: () {},
+                onTap: () {
+                  viewModel.onEvent(const CalendarEvent.loadBackupList());
+                },
               ),
               const Divider(color: Colors.black, height: 0),
               DrawerButton(

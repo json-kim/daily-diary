@@ -10,15 +10,31 @@ class BackupRepositoryImpl with BackupRepository {
   BackupRepositoryImpl(this._dataSource);
 
   @override
-  Future<Result<BackupData>> getBackupData() {
-    // TODO: implement getBackupData
-    throw UnimplementedError();
+  Future<Result<BackupData>> getBackupData(String path) async {
+    final result = await _dataSource.getBackupData(path);
+
+    return result.when(
+      success: (backupData) {
+        return Result.success(backupData);
+      },
+      error: (message) {
+        return Result.error(message);
+      },
+    );
   }
 
   @override
-  Future<Result<List<BackupItem>>> getBackupItemList() {
-    // TODO: implement getBackupItemList
-    throw UnimplementedError();
+  Future<Result<List<BackupItem>>> getBackupItemList() async {
+    final result = await _dataSource.getBackupList();
+
+    return result.when(
+      success: (backupList) {
+        return Result.success(backupList);
+      },
+      error: (message) {
+        return Result.error(message);
+      },
+    );
   }
 
   @override

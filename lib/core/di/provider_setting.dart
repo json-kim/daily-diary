@@ -7,8 +7,11 @@ import 'package:daily_diary/domain/repository/diary_repository.dart';
 import 'package:daily_diary/domain/usecase/delete_all_use_case.dart';
 import 'package:daily_diary/domain/usecase/delete_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/load_all_use_case.dart';
+import 'package:daily_diary/domain/usecase/load_backup_data_use_case.dart';
+import 'package:daily_diary/domain/usecase/load_backup_list_use_case.dart';
 import 'package:daily_diary/domain/usecase/load_diaries_year_use_case.dart';
 import 'package:daily_diary/domain/usecase/load_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/resotre_backup_data_use_case.dart';
 import 'package:daily_diary/domain/usecase/save_backup_use_case.dart';
 import 'package:daily_diary/domain/usecase/save_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/update_diary_use_case.dart';
@@ -63,6 +66,18 @@ Future<List<SingleChildWidget>> setProviders() async {
         context.read<LoadAllUseCase>(),
       ),
     ),
+    ProxyProvider<BackupRepository, LoadBackupListUseCase>(
+      update: (context, repository, _) => LoadBackupListUseCase(repository),
+    ),
+    ProxyProvider<BackupRepository, LoadBackupDataUseCase>(
+      update: (context, repository, _) => LoadBackupDataUseCase(repository),
+    ),
+    ProxyProvider<DiaryRepository, RestoreBackupDataUseCase>(
+      update: (context, repository, _) => RestoreBackupDataUseCase(
+        repository,
+        context.read<LoadBackupDataUseCase>(),
+      ),
+    ),
   ];
 
   final List<SingleChildWidget> viewModels = [
@@ -71,6 +86,8 @@ Future<List<SingleChildWidget>> setProviders() async {
         context.read<LoadDiariesYearUseCase>(),
         context.read<DeleteAllUseCase>(),
         context.read<SaveBackupUseCase>(),
+        context.read<LoadBackupListUseCase>(),
+        context.read<RestoreBackupDataUseCase>(),
       ),
     ),
   ];

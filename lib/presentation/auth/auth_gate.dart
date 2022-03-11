@@ -11,16 +11,17 @@ class AuthGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return ChangeNotifierProvider(
-                create: (context) => AuthViewModel(),
-                child: const AuthScreen());
-          }
+    return ChangeNotifierProvider(
+      create: (context) => AuthViewModel(),
+      child: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const AuthScreen();
+            }
 
-          return const CalendarScreen();
-        });
+            return const CalendarScreen();
+          }),
+    );
   }
 }

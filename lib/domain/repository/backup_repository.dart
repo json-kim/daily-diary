@@ -5,7 +5,7 @@ import 'package:daily_diary/domain/model/backup/backup_item.dart';
 abstract class BackupRepository {
   Future<Result<List<BackupItem>>> getBackupItemList();
 
-  Future<Result<BackupData>> getBackupData();
+  Future<Result<BackupData>> getBackupData(String path);
 
   Future<Result<int>> saveBackupData(BackupData backupData);
 }

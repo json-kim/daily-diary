@@ -8,11 +8,15 @@ abstract class DiaryRepository {
 
   Future<Result<Diary>> getDiary(DateTime date);
 
-  Future<Result<int>> deleteDiary(DateTime date);
+  Future<Result<int>> deleteDiary(Diary diary);
 
   Future<Result<int>> updateDiary(Diary diary);
 
   Future<Result<int>> saveDairy(Diary diary);
 
+  Future<Result<int>> saveDairies(List<Diary> diaries);
+
   Future<Result<int>> deleteAll();
+
+  Future<Result<int>> restoreDiaries(List<Diary> diaries);
 }
