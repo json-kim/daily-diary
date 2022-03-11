@@ -5,7 +5,7 @@ import 'package:daily_diary/domain/usecase/load_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/save_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/update_diary_use_case.dart';
 import 'package:daily_diary/presentation/calendar/calendar_event.dart';
-import 'package:daily_diary/presentation/calendar/calendar_event.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:daily_diary/presentation/calendar/components/daily_box.dart';
 import 'package:daily_diary/presentation/calendar/components/right_darwer.dart';
 import 'package:daily_diary/presentation/edit/edit_screen.dart';
@@ -15,7 +15,6 @@ import 'package:daily_diary/ui/emotion_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:provider/provider.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:dart_date/dart_date.dart';
 
 import 'calendar_view_model.dart';
@@ -109,8 +108,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
             child: Scaffold(
               backgroundColor: whiteColor,
               appBar: AppBar(
+                centerTitle: true,
                 automaticallyImplyLeading: false,
-                title: const Text('Calendar Diary'),
+                title: Text(
+                  'CalenDiary',
+                  style: TextStyle(fontSize: 16.sp),
+                ),
                 actions: [
                   IconButton(
                       onPressed: () {

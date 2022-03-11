@@ -68,10 +68,10 @@ class BackupRemoteDataSource {
 
     final zippedBuffer = gzip.encode(resultBuffer); // 버퍼 압축
 
-    final tempDir = await getTemporaryDirectory();
+    final tempDir = await getTemporaryDirectory(); // 파일 임시 경로
     final path = tempDir.path;
 
-    final tempFile = File('$path/temp.file');
+    final tempFile = File('$path/temp.file'); // 파일에 데이터 작성
     await tempFile.writeAsBytes(zippedBuffer);
     await tempFile.create();
 
