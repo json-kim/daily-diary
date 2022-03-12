@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jsonKim.daily_diary">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="daily_diary"
+        android:label="달력일기"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

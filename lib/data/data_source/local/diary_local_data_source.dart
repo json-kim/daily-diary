@@ -141,16 +141,19 @@ class DiaryLocalDataSource {
       return Result.error('$runtimeType:deleteAll : db is not open');
     }
 
-    final valueString = diaries.map((entity) => entity.toRawValues()).join(',');
-
     final batch = _db.batch();
     batch.delete('diary', where: 'uid = ?', whereArgs: [getUid()]);
-    batch.rawInsert('''
-    INSERT INTO diary
-      (id, content, uid, emoIndex, year, month, day)
-    VALUES
-      $valueString
-    ''');
+
+    if (diaries.isNotEmpty) {
+      final valueString =
+          diaries.map((entity) => entity.toRawValues()).join(',');
+      batch.rawInsert('''
+      INSERT INTO diary
+        (id, content, uid, emoIndex, year, month, day)
+      VALUES
+        $valueString
+      ''');
+    }
 
     await batch.commit();
 

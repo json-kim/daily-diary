@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 import 'auth_view_model.dart';
 
@@ -21,6 +22,13 @@ class AuthScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Image.asset(
+                    'asset/image/logo_transparent.png',
+                    width: 35.w,
+                  ),
+                  SizedBox(
+                    height: 20.h,
+                  ),
                   SignInButton(Buttons.Google, text: '구글 로그인', onPressed: () {
                     viewModel.signInGoogle();
                   })
