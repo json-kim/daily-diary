@@ -13,4 +13,6 @@ class CalendarEvent with _$CalendarEvent {
   const factory CalendarEvent.loadBackupList() = LoadBackupList;
   const factory CalendarEvent.restoreBackupData(BackupItem item) =
       RestoreBackupData;
+  const factory CalendarEvent.deleteBackupData(BackupItem item) =
+      DeleteBackupData;
 }

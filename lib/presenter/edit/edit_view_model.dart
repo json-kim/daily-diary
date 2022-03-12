@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:daily_diary/core/param/param.dart';
 import 'package:daily_diary/domain/model/diary/diary.dart';
-import 'package:daily_diary/domain/usecase/delete_diary_use_case.dart';
-import 'package:daily_diary/domain/usecase/load_diary_use_case.dart';
-import 'package:daily_diary/domain/usecase/save_diary_use_case.dart';
-import 'package:daily_diary/domain/usecase/update_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/delete_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/load_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/save_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/update_diary_use_case.dart';
 import 'package:daily_diary/service/logger_service.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';

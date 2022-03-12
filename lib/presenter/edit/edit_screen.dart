@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:daily_diary/core/util/date_config.dart';
-import 'package:daily_diary/presentation/edit/edit_event.dart';
-import 'package:daily_diary/presentation/global_components/check_dialog.dart';
+import 'package:daily_diary/presenter/edit/edit_event.dart';
+import 'package:daily_diary/presenter/global_components/check_dialog.dart';
 import 'package:daily_diary/ui/emotion_data.dart';
 import 'package:direct_select_flutter/direct_select_container.dart';
 import 'package:direct_select_flutter/direct_select_item.dart';

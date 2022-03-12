@@ -3,9 +3,9 @@ import 'package:daily_diary/core/result/result.dart';
 import 'package:daily_diary/domain/model/backup/backup_data.dart';
 import 'package:daily_diary/domain/model/diary/diary.dart';
 import 'package:daily_diary/domain/repository/backup_repository.dart';
-import 'package:daily_diary/domain/usecase/load_all_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/load_all_use_case.dart';
 
-import 'usecase.dart';
+import '../usecase.dart';
 
 /// 로컬에 저장된 다이어리 데이터 불러와서
 /// 백업 데이터로 변환하여

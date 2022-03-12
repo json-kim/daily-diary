@@ -3,9 +3,9 @@ import 'package:daily_diary/core/result/result.dart';
 import 'package:daily_diary/domain/model/backup/backup_item.dart';
 import 'package:daily_diary/domain/model/diary/diary.dart';
 import 'package:daily_diary/domain/repository/diary_repository.dart';
-import 'package:daily_diary/domain/usecase/load_backup_data_use_case.dart';
+import 'package:daily_diary/domain/usecase/backup/load_backup_data_use_case.dart';
 
-import 'usecase.dart';
+import '../usecase.dart';
 
 class RestoreBackupDataUseCase extends UseCase<int, Data<BackupItem>> {
   final DiaryRepository _repository;

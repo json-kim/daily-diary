@@ -156,4 +156,44 @@ class BackupRemoteDataSource {
 
     return Result.success(backupData);
   }
+
+  /// 백업 데이터 경로를 가지고 백업 데이터 파이어스토리지에서 삭제
+  Future<Result<int>> deleteBackup(BackupItem item) async {
+    // 먼저 백업 아이템 삭제하고 백업 데이터 삭제
+    await _deleteBackupItem(item.id);
+
+    await _deleteBackupData(item.path);
+
+    return const Result.success(1);
+  }
+
+  Future<void> _deleteBackupItem(String id) async {
+    final firestore = FirebaseFirestore.instance;
+
+    final uid = _getUid();
+
+    final querySnapshot = await firestore
+        .collection('users')
+        .doc(uid)
+        .collection('backups')
+        .where('id', isEqualTo: id)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      // docReference 를 가지고 삭제해야 더미데이터가 남지 않는다.
+      final docReference = querySnapshot.docs.first.reference;
+      firestore.runTransaction(
+          (transaction) async => transaction.delete(docReference));
+    } else {
+      throw Exception('해당 백업 아이템 없음');
+    }
+  }
+
+  Future<void> _deleteBackupData(String path) async {
+    final storage = FirebaseStorage.instance;
+
+    final fileRef = storage.ref(path);
+
+    await fileRef.delete();
+  }
 }

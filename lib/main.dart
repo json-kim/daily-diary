@@ -1,6 +1,6 @@
 import 'package:daily_diary/core/di/provider_setting.dart';
-import 'package:daily_diary/presentation/auth/auth_gate.dart';
-import 'package:daily_diary/presentation/calendar/calendar_screen.dart';
+import 'package:daily_diary/presenter/auth/auth_gate.dart';
+import 'package:daily_diary/presenter/calendar/calendar_screen.dart';
 import 'package:daily_diary/service/logger_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

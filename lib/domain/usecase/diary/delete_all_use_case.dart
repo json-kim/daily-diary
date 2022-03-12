@@ -2,7 +2,7 @@ import 'package:daily_diary/core/param/param.dart';
 import 'package:daily_diary/core/result/result.dart';
 import 'package:daily_diary/domain/repository/diary_repository.dart';
 
-import 'usecase.dart';
+import '../usecase.dart';
 
 class DeleteAllUseCase extends UseCase<int, None> {
   final DiaryRepository _repository;

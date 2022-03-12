@@ -1,15 +1,18 @@
 import 'dart:async';
 
-import 'package:daily_diary/domain/usecase/delete_diary_use_case.dart';
-import 'package:daily_diary/domain/usecase/load_diary_use_case.dart';
-import 'package:daily_diary/domain/usecase/save_diary_use_case.dart';
-import 'package:daily_diary/domain/usecase/update_diary_use_case.dart';
-import 'package:daily_diary/presentation/calendar/calendar_event.dart';
+import 'package:daily_diary/domain/model/backup/backup_item.dart';
+import 'package:daily_diary/domain/usecase/diary/delete_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/load_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/save_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/update_diary_use_case.dart';
+import 'package:daily_diary/presenter/calendar/calendar_event.dart';
+import 'package:daily_diary/presenter/calendar/components/backup_dialog.dart';
+import 'package:daily_diary/presenter/global_components/check_dialog.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:daily_diary/presentation/calendar/components/daily_box.dart';
-import 'package:daily_diary/presentation/calendar/components/right_darwer.dart';
-import 'package:daily_diary/presentation/edit/edit_screen.dart';
-import 'package:daily_diary/presentation/edit/edit_view_model.dart';
+import 'package:daily_diary/presenter/calendar/components/daily_box.dart';
+import 'package:daily_diary/presenter/calendar/components/right_darwer.dart';
+import 'package:daily_diary/presenter/edit/edit_screen.dart';
+import 'package:daily_diary/presenter/edit/edit_view_model.dart';
 import 'package:daily_diary/ui/colors.dart';
 import 'package:daily_diary/ui/emotion_data.dart';
 import 'package:flutter/material.dart';
@@ -47,25 +50,24 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ?..hideCurrentMaterialBanner()
             ..showSnackBar(snackBar);
         }, showBackupList: (backupList) {
-          final dialog = AlertDialog(
-            title: const Text('백업 리스트'),
-            content: SizedBox(
-              height: 60.h,
-              width: 70.w,
-              child: ListView(
-                shrinkWrap: true,
-                children: backupList
-                    .map((item) => ListTile(
-                          title: Text(item.uploadDate.format('y/M/d - H:m:s')),
-                          onTap: () {
-                            viewModel
-                                .onEvent(CalendarEvent.restoreBackupData(item));
-                            Navigator.pop(context);
-                          },
-                        ))
-                    .toList(),
-              ),
-            ),
+          final dialog = BackupDialog(
+            backupList: backupList,
+            onTap: (BackupItem item) {
+              viewModel.onEvent(CalendarEvent.restoreBackupData(item));
+              Navigator.pop(context);
+            },
+            onDeleteTap: (BackupItem item) async {
+              final result = await showDialog(
+                context: context,
+                builder: (context) =>
+                    const CheckDialog(content: '정말로 삭제하시겠습니까?'),
+              );
+
+              if (result ?? false) {
+                viewModel.onEvent(CalendarEvent.deleteBackupData(item));
+                Navigator.pop(context);
+              }
+            },
           );
 
           showDialog(
@@ -110,9 +112,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
               appBar: AppBar(
                 centerTitle: true,
                 automaticallyImplyLeading: false,
-                title: Text(
-                  'CalenDiary',
-                  style: TextStyle(fontSize: 16.sp),
+                title: Image.asset(
+                  'asset/image/title_transparent.png',
+                  width: 30.w,
                 ),
                 actions: [
                   IconButton(

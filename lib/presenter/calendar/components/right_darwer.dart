@@ -1,8 +1,9 @@
-import 'package:daily_diary/presentation/auth/auth_view_model.dart';
-import 'package:daily_diary/presentation/calendar/calendar_event.dart';
-import 'package:daily_diary/presentation/calendar/calendar_view_model.dart';
-import 'package:daily_diary/presentation/calendar/components/drawer_button.dart';
-import 'package:daily_diary/presentation/global_components/check_dialog.dart';
+import 'package:daily_diary/presenter/auth/auth_view_model.dart';
+import 'package:daily_diary/presenter/calendar/calendar_event.dart';
+import 'package:daily_diary/presenter/calendar/calendar_view_model.dart';
+import 'package:daily_diary/presenter/calendar/components/drawer_button.dart';
+import 'package:daily_diary/presenter/global_components/check_dialog.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,7 @@ class RightDrawer extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Divider(color: Colors.black, height: 0),
+              Spacer(),
               DrawerButton(
                 title: '로그아웃',
                 icon: const Icon(Icons.logout),
@@ -58,7 +59,11 @@ class RightDrawer extends StatelessWidget {
                   }
                 },
               ),
-              const Divider(color: Colors.black, height: 0),
+              Spacer(),
+              Image.asset(
+                'asset/image/title_transparent.png',
+                width: 30.w,
+              )
             ],
           ),
         ),

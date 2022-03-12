@@ -1,5 +1,5 @@
-import 'package:daily_diary/presentation/auth/auth_view_model.dart';
-import 'package:daily_diary/presentation/calendar/calendar_screen.dart';
+import 'package:daily_diary/presenter/auth/auth_view_model.dart';
+import 'package:daily_diary/presenter/calendar/calendar_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

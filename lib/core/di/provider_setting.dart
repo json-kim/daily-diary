@@ -4,25 +4,24 @@ import 'package:daily_diary/data/repository/backup_repository_impl.dart';
 import 'package:daily_diary/data/repository/diary_repository_impl.dart';
 import 'package:daily_diary/domain/repository/backup_repository.dart';
 import 'package:daily_diary/domain/repository/diary_repository.dart';
-import 'package:daily_diary/domain/usecase/delete_all_use_case.dart';
-import 'package:daily_diary/domain/usecase/delete_diary_use_case.dart';
-import 'package:daily_diary/domain/usecase/load_all_use_case.dart';
-import 'package:daily_diary/domain/usecase/load_backup_data_use_case.dart';
-import 'package:daily_diary/domain/usecase/load_backup_list_use_case.dart';
-import 'package:daily_diary/domain/usecase/load_diaries_year_use_case.dart';
-import 'package:daily_diary/domain/usecase/load_diary_use_case.dart';
-import 'package:daily_diary/domain/usecase/resotre_backup_data_use_case.dart';
-import 'package:daily_diary/domain/usecase/save_backup_use_case.dart';
-import 'package:daily_diary/domain/usecase/save_diary_use_case.dart';
-import 'package:daily_diary/domain/usecase/update_diary_use_case.dart';
-import 'package:daily_diary/presentation/calendar/calendar_view_model.dart';
+import 'package:daily_diary/domain/usecase/backup/delete_backup_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/delete_all_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/delete_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/load_all_use_case.dart';
+import 'package:daily_diary/domain/usecase/backup/load_backup_data_use_case.dart';
+import 'package:daily_diary/domain/usecase/backup/load_backup_list_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/load_diaries_year_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/load_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/backup/resotre_backup_data_use_case.dart';
+import 'package:daily_diary/domain/usecase/backup/save_backup_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/save_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/update_diary_use_case.dart';
+import 'package:daily_diary/presenter/calendar/calendar_view_model.dart';
 import 'package:daily_diary/service/sqflite_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 Future<List<SingleChildWidget>> setProviders() async {
-  // TODO: 로컬 hive 세팅
-
   // 로컬 sqlite 세팅
   await SqlService.instance.init();
   final db = SqlService.instance.db;
@@ -78,6 +77,9 @@ Future<List<SingleChildWidget>> setProviders() async {
         context.read<LoadBackupDataUseCase>(),
       ),
     ),
+    ProxyProvider<BackupRepository, DeleteBackupUseCase>(
+      update: (context, repository, _) => DeleteBackupUseCase(repository),
+    )
   ];
 
   final List<SingleChildWidget> viewModels = [
@@ -88,6 +90,7 @@ Future<List<SingleChildWidget>> setProviders() async {
         context.read<SaveBackupUseCase>(),
         context.read<LoadBackupListUseCase>(),
         context.read<RestoreBackupDataUseCase>(),
+        context.read<DeleteBackupUseCase>(),
       ),
     ),
   ];

@@ -50,4 +50,18 @@ class BackupRepositoryImpl with BackupRepository {
       },
     );
   }
+
+  @override
+  Future<Result<int>> deleteBackup(BackupItem item) async {
+    final result = await _dataSource.deleteBackup(item);
+
+    return result.when(
+      success: (delResult) {
+        return Result.success(delResult);
+      },
+      error: (message) {
+        return Result.error(message);
+      },
+    );
+  }
 }

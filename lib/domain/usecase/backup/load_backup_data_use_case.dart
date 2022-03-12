@@ -2,10 +2,9 @@ import 'package:daily_diary/core/param/param.dart';
 import 'package:daily_diary/core/result/result.dart';
 import 'package:daily_diary/domain/model/backup/backup_data.dart';
 import 'package:daily_diary/domain/model/backup/backup_item.dart';
-import 'package:daily_diary/domain/model/diary/diary.dart';
 import 'package:daily_diary/domain/repository/backup_repository.dart';
 
-import 'usecase.dart';
+import '../usecase.dart';
 
 class LoadBackupDataUseCase extends UseCase<BackupData, Data<BackupItem>> {
   final BackupRepository _repository;

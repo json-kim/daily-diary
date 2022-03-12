@@ -8,4 +8,6 @@ abstract class BackupRepository {
   Future<Result<BackupData>> getBackupData(String path);
 
   Future<Result<int>> saveBackupData(BackupData backupData);
+
+  Future<Result<int>> deleteBackup(BackupItem item);
 }
