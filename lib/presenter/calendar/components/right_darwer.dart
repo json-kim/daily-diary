@@ -1,4 +1,3 @@
-import 'package:daily_diary/presenter/analytics/analytics_screen.dart';
 import 'package:daily_diary/presenter/auth/auth_view_model.dart';
 import 'package:daily_diary/presenter/calendar/calendar_event.dart';
 import 'package:daily_diary/presenter/calendar/calendar_state.dart';
@@ -6,6 +5,7 @@ import 'package:daily_diary/presenter/calendar/calendar_view_model.dart';
 import 'package:daily_diary/presenter/calendar/components/drawer_button.dart';
 import 'package:daily_diary/presenter/global_components/check_dialog.dart';
 import 'package:daily_diary/presenter/info/info_screen.dart';
+import 'package:daily_diary/service/package_info_service.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -99,7 +99,9 @@ class RightDrawer extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const InfoScreen(),
+                      builder: (context) => InfoScreen(
+                        packageInfoService: PackageInfoService.instance,
+                      ),
                     ),
                   );
                 },

@@ -1,12 +1,8 @@
 import 'dart:async';
 
-import 'package:daily_diary/core/util/date_config.dart';
 import 'package:daily_diary/domain/model/backup/backup_item.dart';
 import 'package:daily_diary/domain/usecase/diary/delete_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/diary/load_all_use_case.dart';
-import 'package:daily_diary/domain/usecase/diary/load_diary_use_case.dart';
-import 'package:daily_diary/domain/usecase/diary/save_diary_use_case.dart';
-import 'package:daily_diary/domain/usecase/diary/update_diary_use_case.dart';
 import 'package:daily_diary/presenter/calendar/calendar_event.dart';
 import 'package:daily_diary/presenter/calendar/calendar_state.dart';
 import 'package:daily_diary/presenter/calendar/components/backup_dialog.dart';
@@ -16,16 +12,11 @@ import 'package:daily_diary/presenter/calendar/components/month_calendar.dart';
 import 'package:daily_diary/presenter/calendar/components/year_calendar.dart';
 import 'package:daily_diary/presenter/global_components/check_dialog.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:daily_diary/presenter/calendar/components/daily_box.dart';
 import 'package:daily_diary/presenter/calendar/components/right_darwer.dart';
-import 'package:daily_diary/presenter/edit/edit_screen.dart';
-import 'package:daily_diary/presenter/edit/edit_view_model.dart';
 import 'package:daily_diary/ui/colors.dart';
-import 'package:daily_diary/ui/emotion_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:provider/provider.dart';
-import 'package:dart_date/dart_date.dart';
 
 import 'calendar_view_model.dart';
 
@@ -136,7 +127,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ),
         if (state.isLoading)
           Container(
-              color: Colors.grey.withOpacity(0.2),
+              color: Colors.transparent,
               alignment: Alignment.center,
               child: const CircularProgressIndicator()),
       ],

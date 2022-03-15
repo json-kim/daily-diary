@@ -17,12 +17,15 @@ import 'package:daily_diary/domain/usecase/backup/save_backup_use_case.dart';
 import 'package:daily_diary/domain/usecase/diary/save_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/diary/update_diary_use_case.dart';
 import 'package:daily_diary/presenter/calendar/calendar_view_model.dart';
-import 'package:daily_diary/presenter/calendar/components/filter/filter_view_model.dart';
+import 'package:daily_diary/service/package_info_service.dart';
 import 'package:daily_diary/service/sqflite_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 Future<List<SingleChildWidget>> setProviders() async {
+  // 패키지 정보 세팅
+  PackageInfoService.instance;
+
   // 로컬 sqlite 세팅
   await SqlService.instance.init();
   final db = SqlService.instance.db;
