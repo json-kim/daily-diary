@@ -7,7 +7,14 @@ part 'calendar_state.freezed.dart';
 class CalendarState with _$CalendarState {
   const factory CalendarState({
     @Default(false) bool isLoading,
+    @Default(CalendarMode.year) CalendarMode calendarMode,
     required DateTime currentDate,
     @Default([]) List<Diary> diaries,
   }) = _CalendarState;
+}
+
+enum CalendarMode {
+  year,
+  month,
+  filter,
 }

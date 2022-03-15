@@ -10,7 +10,7 @@ class DailyBox extends StatelessWidget {
   DailyBox({
     required this.color,
     required this.onTap,
-    required this.label,
+    this.label,
     required this.date,
     Key? key,
   }) : super(key: key);

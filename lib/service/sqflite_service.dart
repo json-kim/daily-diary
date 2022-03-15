@@ -16,7 +16,7 @@ class SqlService {
     // 데이터베이스 경로 가져오기
     var databasesPath = await getDatabasesPath();
     String path = join(databasesPath, 'diary.db');
-    await deleteDatabase(path); // 데이터 베이스 삭제 코드
+    // await deleteDatabase(path); // 데이터 베이스 삭제 코드
 
     // 데이터베이스 열기
     _db = await openDatabase(

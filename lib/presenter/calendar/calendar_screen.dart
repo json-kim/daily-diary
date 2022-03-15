@@ -1,12 +1,19 @@
 import 'dart:async';
 
+import 'package:daily_diary/core/util/date_config.dart';
 import 'package:daily_diary/domain/model/backup/backup_item.dart';
 import 'package:daily_diary/domain/usecase/diary/delete_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/load_all_use_case.dart';
 import 'package:daily_diary/domain/usecase/diary/load_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/diary/save_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/diary/update_diary_use_case.dart';
 import 'package:daily_diary/presenter/calendar/calendar_event.dart';
+import 'package:daily_diary/presenter/calendar/calendar_state.dart';
 import 'package:daily_diary/presenter/calendar/components/backup_dialog.dart';
+import 'package:daily_diary/presenter/calendar/components/filter/filter_calendar.dart';
+import 'package:daily_diary/presenter/calendar/components/filter/filter_view_model.dart';
+import 'package:daily_diary/presenter/calendar/components/month_calendar.dart';
+import 'package:daily_diary/presenter/calendar/components/year_calendar.dart';
 import 'package:daily_diary/presenter/global_components/check_dialog.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:daily_diary/presenter/calendar/components/daily_box.dart';
@@ -96,7 +103,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget build(BuildContext context) {
     final viewModel = context.watch<CalendarViewModel>();
     final state = viewModel.state;
-    final dates = viewModel.dates;
 
     return Stack(
       children: [
@@ -124,86 +130,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       icon: const Icon(Icons.menu))
                 ],
               ),
-              body: Column(
-                children: [
-                  SizedBox(
-                    height: 8.h,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Row(children: [
-                        IconButton(
-                          onPressed: () {
-                            viewModel
-                                .onEvent(const CalendarEvent.changeYear(false));
-                          },
-                          icon: Icon(
-                            Icons.arrow_back_ios,
-                            size: 16.sp,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Expanded(
-                            child: Center(
-                                child: Text(
-                          state.currentDate.year.toString(),
-                          style: TextStyle(fontSize: 16.sp),
-                        ))),
-                        IconButton(
-                          onPressed: () {
-                            viewModel
-                                .onEvent(const CalendarEvent.changeYear(true));
-                          },
-                          icon: Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16.sp,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ]),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    child: Row(
-                      children: List.generate(
-                          14,
-                          (index) => Expanded(
-                                  child: Center(
-                                child: index == 0 || index == 13
-                                    ? Container()
-                                    : Text(index.toString()),
-                              ))),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
-                      child: RefreshIndicator(
-                        onRefresh: () async {
-                          viewModel.onEvent(const CalendarEvent.load());
-                        },
-                        child: GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 14,
-                            childAspectRatio: 1,
-                            crossAxisSpacing: 1,
-                            mainAxisSpacing: 1,
-                          ),
-                          itemCount: 434,
-                          itemBuilder: (context, idx) => GestureDetector(
-                            child: _buildDailyBox(
-                              idx,
-                              dates,
-                              viewModel,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
+              body: _buildBody(state.calendarMode),
             ),
           ),
         ),
@@ -216,56 +143,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _buildDailyBox(
-    int idx,
-    List<int> dates,
-    CalendarViewModel viewModel,
-  ) {
-    final diaries = viewModel.state.diaries;
-    Color color = defaultBoxColor;
-    String? label;
-    DateTime? date;
-    Function()? onTap;
-    int month = idx % 14;
-    int day = idx ~/ 14 + 1;
-
-    if (month == 0) {
-      // 날짜 박스
-      color = whiteColor;
-      label = day.toString();
-    } else if (month == 13 || day > dates[month - 1]) {
-      // 31일 아닌 달 박스 채우기
-      color = whiteColor;
-    } else {
-      date = DateTime(viewModel.state.currentDate.year, month, day);
-
-      if (diaries.any((diary) => diary.date.isSameDay(date!))) {
-        final diary =
-            diaries.firstWhere((diary) => diary.date.isSameDay(date!));
-
-        color = emoDatas[emoLabels[diary.emoIndex]]!;
-      }
-
-      onTap = () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(
-          builder: (context) => ChangeNotifierProvider(
-            create: (context) => EditViewModel(
-              context.read<SaveDiaryUseCase>(),
-              context.read<UpdateDiaryUseCase>(),
-              context.read<LoadDiaryUseCase>(),
-              context.read<DeleteDiaryUseCase>(),
-              date!,
-            ),
-            child: const EditScreen(),
-          ),
-        ))
-            .then((_) {
-          viewModel.onEvent(const CalendarEvent.load());
-        });
-      };
+  Widget _buildBody(CalendarMode calendarMode) {
+    switch (calendarMode) {
+      case CalendarMode.year:
+        return const YearCalendar();
+      case CalendarMode.month:
+        return const MonthCalendar();
+      default:
+        return ChangeNotifierProvider<FilterViewModel>(
+          create: (context) => FilterViewModel(context.read<LoadAllUseCase>()),
+          child: const FilterCalendar(),
+        );
     }
-
-    return DailyBox(date: date, label: label, color: color, onTap: onTap);
   }
 }

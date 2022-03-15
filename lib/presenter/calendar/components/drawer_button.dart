@@ -22,7 +22,7 @@ class DrawerButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: SizedBox(
-        height: height ?? 8.h,
+        height: height ?? 7.h,
         width: width ?? double.infinity,
         child: Container(
           padding: const EdgeInsets.all(8.0),

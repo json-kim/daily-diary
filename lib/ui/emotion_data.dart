@@ -19,3 +19,11 @@ Map<String, Color> emoDatas = {
   emoLabels[3]: emoColor4,
   emoLabels[4]: emoColor5,
 };
+
+Map<String, IconData> emoIcons = {
+  emoLabels[0]: Icons.sentiment_very_satisfied_rounded,
+  emoLabels[1]: Icons.sentiment_satisfied_outlined,
+  emoLabels[2]: Icons.sentiment_neutral_outlined,
+  emoLabels[3]: Icons.sentiment_dissatisfied_outlined,
+  emoLabels[4]: Icons.sentiment_very_dissatisfied_outlined,
+};

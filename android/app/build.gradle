@@ -67,8 +67,10 @@ android {
     }
     buildTypes {
         release {
-           signingConfig signingConfigs.release
+            // 릴리즈 설정
+            signingConfig signingConfigs.release
             
+            // 프로가드(난독화) 설정
             minifyEnabled true
             useProguard true
 

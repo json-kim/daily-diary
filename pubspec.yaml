@@ -58,14 +58,12 @@ dependencies:
   # responsive size
   responsive_sizer: ^3.0.5+1
 
-  # logger
-  logger: ^1.1.0
-
-  # date extension
+  # util
   dart_date: ^1.1.1
-
-  # uuid
+  logger: ^1.1.0
+  path_provider: ^2.0.9
   uuid: ^3.0.6
+  package_info_plus: ^1.4.0
 
   # firebase
   firebase_core: ^1.13.1
@@ -73,9 +71,6 @@ dependencies:
   cloud_firestore: ^3.1.10
   firebase_storage: ^10.2.9
   google_sign_in: ^5.2.4
-
-  # path
-  path_provider: ^2.0.9
 
 
 

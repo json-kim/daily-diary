@@ -17,6 +17,7 @@ import 'package:daily_diary/domain/usecase/backup/save_backup_use_case.dart';
 import 'package:daily_diary/domain/usecase/diary/save_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/diary/update_diary_use_case.dart';
 import 'package:daily_diary/presenter/calendar/calendar_view_model.dart';
+import 'package:daily_diary/presenter/calendar/components/filter/filter_view_model.dart';
 import 'package:daily_diary/service/sqflite_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';

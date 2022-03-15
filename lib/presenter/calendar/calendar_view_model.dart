@@ -5,9 +5,11 @@ import 'package:daily_diary/domain/model/backup/backup_item.dart';
 import 'package:daily_diary/domain/usecase/backup/delete_backup_use_case.dart';
 import 'package:daily_diary/domain/usecase/diary/delete_all_use_case.dart';
 import 'package:daily_diary/domain/usecase/backup/load_backup_list_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/load_all_use_case.dart';
 import 'package:daily_diary/domain/usecase/diary/load_diaries_year_use_case.dart';
 import 'package:daily_diary/domain/usecase/backup/resotre_backup_data_use_case.dart';
 import 'package:daily_diary/domain/usecase/backup/save_backup_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/util/filter.dart';
 import 'package:daily_diary/service/logger_service.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_date/dart_date.dart';
@@ -38,6 +40,11 @@ class CalendarViewModel with ChangeNotifier {
         (index) => DateTime(_state.currentDate.year, index + 1).getDaysInMonth);
   }
 
+  /// 현재 달의 첫 시작날이 몇요일인지
+  int get startDurationOfMonth {
+    return _state.currentDate.startOfMonth.getWeekday % 7;
+  }
+
   /// 생성자 (_load 호출)
   CalendarViewModel(
     this._loadDiariesYearUseCase,
@@ -61,6 +68,8 @@ class CalendarViewModel with ChangeNotifier {
     event.when(
       load: _load,
       changeYear: _changeYear,
+      changeMonth: _changeMonth,
+      changeMode: _changeMode,
       delete: _delete,
       reset: _reset,
       backup: _backup,
@@ -72,12 +81,34 @@ class CalendarViewModel with ChangeNotifier {
 
   /// 연도 변경 콜백
   void _changeYear(bool up) {
-    // 연도 변경 (+1, -1)
+    // 연도 변경 (true: +1, false: -1)
     if (up) {
       _state = _state.copyWith(currentDate: _state.currentDate.addYears(1));
     } else {
       _state = _state.copyWith(currentDate: _state.currentDate.subYears(1));
     }
+
+    // 데이터 다시 로드
+    _load();
+  }
+
+  /// 월 변경 콜백
+  void _changeMonth(bool up) {
+    // 월 변경 (true: +1, false: -1)
+    if (up) {
+      _state = _state.copyWith(currentDate: _state.currentDate.addMonths(1));
+    } else {
+      _state = _state.copyWith(currentDate: _state.currentDate.subMonths(1));
+    }
+
+    // 데이터 다시 로드
+    _load();
+  }
+
+  /// 달력 모드 변경
+  void _changeMode(CalendarMode calendarMode) {
+    _state = _state.copyWith(calendarMode: calendarMode);
+    _streamController.add(const CalendarUiEvent.toggleDrawer(false));
 
     // 데이터 다시 로드
     _load();
