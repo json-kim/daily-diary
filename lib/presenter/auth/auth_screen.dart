@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
@@ -31,7 +33,12 @@ class AuthScreen extends StatelessWidget {
                   ),
                   SignInButton(Buttons.Google, text: '구글 로그인', onPressed: () {
                     viewModel.signInGoogle();
-                  })
+                  }),
+                  // ios 기기에서만 로그인 가능
+                  if (Platform.isIOS)
+                    SignInButton(Buttons.Apple, text: '애플 로그인', onPressed: () {
+                      viewModel.signInWithApple();
+                    }),
                 ],
               ),
             ),

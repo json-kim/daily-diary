@@ -65,14 +65,17 @@ dependencies:
   uuid: ^3.0.6
   package_info_plus: ^1.4.0
   url_launcher: ^6.0.20
+  crypto: ^3.0.1
 
 
-  # firebase
+
+  # firebase & login
   firebase_core: ^1.13.1
   firebase_auth: ^3.3.9
   cloud_firestore: ^3.1.10
   firebase_storage: ^10.2.9
   google_sign_in: ^5.2.4
+  sign_in_with_apple: ^3.3.0
 
 
 
