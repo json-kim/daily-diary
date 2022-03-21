@@ -1,17 +1,24 @@
 import 'package:daily_diary/core/di/provider_setting.dart';
 import 'package:daily_diary/presenter/auth/auth_gate.dart';
-import 'package:daily_diary/presenter/calendar/calendar_screen.dart';
 import 'package:daily_diary/service/logger_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   await Firebase.initializeApp();
   LoggerService.instance.init();
+
   final providers = await setProviders();
   runApp(
     MultiProvider(
@@ -36,7 +43,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [
         Locale('ko'),
       ],
-      title: 'daily diary',
+      title: '달력일기',
       theme: ThemeData.light().copyWith(
         appBarTheme: const AppBarTheme(
             elevation: 0,

@@ -24,7 +24,6 @@ class AuthViewModel with ChangeNotifier {
         // TODO: 로그인 실패
         return;
       }
-
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? googleAuth =
           await googleUser.authentication;

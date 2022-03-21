@@ -6,5 +6,5 @@ part 'result.freezed.dart';
 @freezed
 class Result<T> with _$Result<T> {
   const factory Result.success(T data) = Success; // 성공 시
-  const factory Result.error(String message) = Error; // 실패 시
+  const factory Result.error(Exception exception) = Error; // 실패 시
 }

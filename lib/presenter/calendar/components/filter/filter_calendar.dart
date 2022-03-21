@@ -1,5 +1,11 @@
 import 'dart:async';
 
+import 'package:daily_diary/domain/usecase/diary/delete_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/load_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/save_diary_use_case.dart';
+import 'package:daily_diary/domain/usecase/diary/update_diary_use_case.dart';
+import 'package:daily_diary/presenter/edit/edit_screen.dart';
+import 'package:daily_diary/presenter/edit/edit_view_model.dart';
 import 'package:dart_date/dart_date.dart';
 import 'package:daily_diary/presenter/calendar/components/filter/filter_event.dart';
 import 'package:daily_diary/presenter/calendar/components/filter/filter_view_model.dart';
@@ -150,37 +156,59 @@ class _FilterCalendarState extends State<FilterCalendar> {
                           height: 8.h,
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 2),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    color: emoDatas[emoLabels[diary.emoIndex]],
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(
+                                  builder: (context) => ChangeNotifierProvider(
+                                    create: (context) => EditViewModel(
+                                      context.read<SaveDiaryUseCase>(),
+                                      context.read<UpdateDiaryUseCase>(),
+                                      context.read<LoadDiaryUseCase>(),
+                                      context.read<DeleteDiaryUseCase>(),
+                                      diary.date,
+                                    ),
+                                    child: const EditScreen(),
                                   ),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  flex: 12,
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 2),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(diary.date.format('y년 M월 d일')),
-                                        Text(
-                                          diary.content,
-                                          overflow: TextOverflow.visible,
-                                          maxLines: 2,
-                                        ),
-                                      ],
+                                ))
+                                    .then((_) {
+                                  final query = _textEditingController.text;
+                                  viewModel.onEvent(FilterEvent.load(query));
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      color:
+                                          emoDatas[emoLabels[diary.emoIndex]],
                                     ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    flex: 12,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 2),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(diary.date.format('y년 M월 d일')),
+                                          Text(
+                                            diary.content,
+                                            overflow: TextOverflow.visible,
+                                            maxLines: 2,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),

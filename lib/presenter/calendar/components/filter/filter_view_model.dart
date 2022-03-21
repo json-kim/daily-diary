@@ -55,7 +55,8 @@ class FilterViewModel with ChangeNotifier {
         _state = _state.copyWith(diaries: diaries);
       },
       error: (message) {
-        _streamController.add(FilterUiEvent.snackBar(message));
+        _streamController
+            .add(const FilterUiEvent.snackBar('데이터를 가져오는데 실패했습니다.'));
         LoggerService.instance.logger?.e(message);
       },
     );
@@ -64,25 +65,3 @@ class FilterViewModel with ChangeNotifier {
     notifyListeners();
   }
 }
-
-  // /// 필터 정보(쿼리, 이모지 인덱스)를 가지고 다이어리 리스트 로드
-  // Future<void> _loadWithFilter(String query, int emoIndex) async {
-  //   _state = _state.copyWith(isLoading: true);
-  //   notifyListeners();
-
-  //   final result =
-  //       await _loadAllUseCase(Data(Filter(query: query, emoIndex: emoIndex)));
-
-  //   result.when(
-  //     success: (diaries) {
-  //       _state = _state.copyWith(diaries: diaries);
-  //     },
-  //     error: (message) {
-  //       _streamController
-  //           .add(const CalendarUiEvent.snackBar('가져오기 실패. 다시 시도하세요.'));
-  //     },
-  //   );
-
-  //   _state = _state.copyWith(isLoading: false);
-  //   notifyListeners();
-  // }

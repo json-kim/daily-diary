@@ -28,6 +28,10 @@ class AuthScreen extends StatelessWidget {
                     'asset/image/logo_transparent.png',
                     width: 35.w,
                   ),
+                  Image.asset(
+                    'asset/image/title_transparent.png',
+                    width: 40.w,
+                  ),
                   SizedBox(
                     height: 20.h,
                   ),
