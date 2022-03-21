@@ -10,7 +10,7 @@ import 'remote_api_exception.dart';
 
 class ErrorApi {
   /// 로컬 db 처리시 발생하는 에러 핸들러
-  static Future<Result<T>> handleLoacalDbError<T>(
+  static Future<Result<T>> handleLocalDbError<T>(
       Future<Result<T>> Function() requestFunction,
       Logger logger,
       String prefix) async {
@@ -20,7 +20,9 @@ class ErrorApi {
       logger.e('$prefix: ${e.runtimeType}: db 사용시 에러 발생 \n', e);
       return Result.error(e);
     } on LocalDbException catch (e) {
-      logger.e('$prefix: ${e.message} \n ${e.runtimeType} \n', e);
+      if (e.errorCause != DbErrorCause.EMPTY) {
+        logger.e('$prefix: ${e.message} \n ${e.runtimeType} \n', e);
+      }
       return Result.error(e);
     } on AuthException catch (e) {
       logger.e('$prefix: ${e.message} \n ${e.runtimeType} \n', e);

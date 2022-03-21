@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:daily_diary/core/param/param.dart';
 import 'package:daily_diary/domain/usecase/diary/load_all_use_case.dart';
 import 'package:daily_diary/domain/usecase/diary/util/filter.dart';
-import 'package:daily_diary/service/logger_service.dart';
 import 'package:flutter/material.dart';
 
 import 'filter_state.dart';
@@ -57,7 +56,6 @@ class FilterViewModel with ChangeNotifier {
       error: (message) {
         _streamController
             .add(const FilterUiEvent.snackBar('데이터를 가져오는데 실패했습니다.'));
-        LoggerService.instance.logger?.e(message);
       },
     );
 

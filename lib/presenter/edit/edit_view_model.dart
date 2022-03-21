@@ -6,7 +6,6 @@ import 'package:daily_diary/domain/usecase/diary/delete_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/diary/load_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/diary/save_diary_use_case.dart';
 import 'package:daily_diary/domain/usecase/diary/update_diary_use_case.dart';
-import 'package:daily_diary/service/logger_service.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -112,7 +111,6 @@ class EditViewModel with ChangeNotifier {
           _load();
         },
         error: (message) {
-          LoggerService.instance.logger?.e(message);
           _streamController.add(const EditUiEvent.snackBar('저장 실패'));
         },
       );
@@ -127,7 +125,6 @@ class EditViewModel with ChangeNotifier {
           _load();
         },
         error: (message) {
-          LoggerService.instance.logger?.e(message);
           _streamController.add(const EditUiEvent.snackBar('저장 실패'));
         },
       );
@@ -190,7 +187,6 @@ class EditViewModel with ChangeNotifier {
         _load();
       },
       error: (message) {
-        LoggerService.instance.logger?.e(message);
         _streamController.add(const EditUiEvent.snackBar('삭제 실패'));
       },
     );

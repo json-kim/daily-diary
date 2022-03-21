@@ -36,7 +36,7 @@ class DiaryLocalDataSource {
 
   /// 저장된 모든 다이어리 가져오기
   Future<Result<List<DiaryLocalEntity>>> getAllDiaries() async {
-    return ErrorApi.handleLoacalDbError(() async {
+    return ErrorApi.handleLocalDbError(() async {
       await _dbOpenCheck();
 
       // db에서 데이터 가져오기
@@ -51,7 +51,7 @@ class DiaryLocalDataSource {
 
   /// 현재 년도의 다이어리 가져오기
   Future<Result<List<DiaryLocalEntity>>> getDiariesYear(int year) async {
-    return ErrorApi.handleLoacalDbError(() async {
+    return ErrorApi.handleLocalDbError(() async {
       await _dbOpenCheck();
 
       // db에서 데이터 가져오기
@@ -66,7 +66,7 @@ class DiaryLocalDataSource {
 
   /// 특정 날짜의 다이어리 가져오기
   Future<Result<DiaryLocalEntity>> getDiary(DateTime date) async {
-    return ErrorApi.handleLoacalDbError(() async {
+    return ErrorApi.handleLocalDbError(() async {
       await _dbOpenCheck();
 
       // db에서 데이터 가져오기
@@ -87,7 +87,7 @@ class DiaryLocalDataSource {
 
   /// 다이어리 저장하기
   Future<Result<int>> saveDiary(DiaryLocalEntity diary) async {
-    return ErrorApi.handleLoacalDbError(() async {
+    return ErrorApi.handleLocalDbError(() async {
       await _dbOpenCheck();
 
       // db에 데이터 저장
@@ -99,7 +99,7 @@ class DiaryLocalDataSource {
 
   /// 다이어리 삭제하기
   Future<Result<int>> deleteDiary(String id) async {
-    return ErrorApi.handleLoacalDbError(() async {
+    return ErrorApi.handleLocalDbError(() async {
       await _dbOpenCheck();
 
       // db에서 데이터 삭제
@@ -112,7 +112,7 @@ class DiaryLocalDataSource {
 
   /// 다이어리 업데이트 하기
   Future<Result<int>> updateDiary(DiaryLocalEntity diary) async {
-    return ErrorApi.handleLoacalDbError(() async {
+    return ErrorApi.handleLocalDbError(() async {
       await _dbOpenCheck();
 
       // db에 데이터 업데이트 하기
@@ -125,7 +125,7 @@ class DiaryLocalDataSource {
 
   /// 다이어리 전부 삭제하기
   Future<Result<int>> deleteAll() async {
-    return ErrorApi.handleLoacalDbError(() async {
+    return ErrorApi.handleLocalDbError(() async {
       await _dbOpenCheck();
 
       // db에서 데이터 전부 삭제
@@ -138,7 +138,7 @@ class DiaryLocalDataSource {
 
   /// 다이어리 리스트 저장하기
   Future<Result<int>> saveDiaries(List<DiaryLocalEntity> diaries) async {
-    return ErrorApi.handleLoacalDbError(() async {
+    return ErrorApi.handleLocalDbError(() async {
       await _dbOpenCheck();
 
       final valueString =
@@ -157,7 +157,7 @@ class DiaryLocalDataSource {
 
   /// 백업 데이터로 db 초기화
   Future<Result<int>> restoreDiaries(List<DiaryLocalEntity> diaries) async {
-    return ErrorApi.handleLoacalDbError(() async {
+    return ErrorApi.handleLocalDbError(() async {
       await _dbOpenCheck();
 
       final batch = _db.batch();
